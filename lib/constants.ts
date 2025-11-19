@@ -1,6 +1,6 @@
 // Application-wide constants
 
-export const APP_NAME = 'Journal App'
+export const APP_NAME = 'Agency Foundation'
 export const APP_DESCRIPTION = 'Agency project template'
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB

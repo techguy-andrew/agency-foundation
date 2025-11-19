@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: 'Journal App',
+  name: 'Agency Foundation',
   description: 'Agency project template with standardized structure',
   url: 'https://example.com',
   ogImage: 'https://example.com/og.jpg',
