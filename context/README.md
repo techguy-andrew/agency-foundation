@@ -23,10 +23,11 @@ This is the agency advantage. Own it.
 - **Next.js 16** - Full-stack React framework with server components
 - **TypeScript 5** - Type safety throughout the entire stack
 - **Tailwind CSS v4** - Design tokens via CSS custom properties
-- **Radix UI** - Accessible, unstyled component primitives
 - **Motion** - Smooth, professional animations (formerly Framer Motion)
 - **React Query** - Optimistic updates and state management
 - **Prisma** - Type-safe database ORM (schema included, client installs per-project)
+- **Neon** - Serverless PostgreSQL database
+- **Clerk** - User authentication and management
 - **pnpm** - Fast, efficient package management
 - **Vercel** - Zero-config deployment
 
@@ -49,7 +50,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-## Component Library (21 Components)
+## Component Library (20 Components)
 
 ### UI Primitives (7)
 `Badge` `Button` `Card` `Dialog` `DropdownMenu` `Input` `Skeleton`
@@ -57,11 +58,11 @@ Open [http://localhost:3000](http://localhost:3000)
 ### Feature Components (6)
 `FileGallery` `ItemCard` `ItemCardSkeleton` `ItemForm` `LoginForm` `SettingsForm`
 
-### Layout Components (4)
-`Header` `Footer` `Sidebar` `Navigation`
+### Layout/Semantic Components (7)
+`EmptyState` `Footer` `Header` `Navigation` `PageHeader` `PageSection` `Sidebar`
 
-### Icons (4)
-`CancelIcon` `LoadingIcon` `MenuIcon` `SaveIcon`
+### Icons (10)
+`CancelIcon` `CloseIcon` `FileIcon` `GripVerticalIcon` `LoadingIcon` `MenuIcon` `PlusIcon` `SaveIcon` `SpinnerIcon` `UploadIcon`
 
 Every component is documented with props interfaces, npm dependencies, and whether it's "smart" (handles logic/data) or "presentational" (just renders). Open `app/components/` to see the complete library.
 
@@ -152,6 +153,12 @@ export default function DashboardPage() {
 
 When you need similar functionality in another project, copy the component files and compose them differently. Don't rebuild from scratch.
 
+### 7. Purpose-Built Layout Components
+
+We build semantic components that encode complete layout solutions rather than generic containers. PropertyCard, DataTable, FilterSidebar—each component knows how it should be laid out because that knowledge was refined across real client work. Modern CSS techniques (Grid, Container Queries) are implementation details, not exposed API surface.
+
+**Further Reading:** [layout-architecture.md](./layout-architecture.md) provides comprehensive guidance on our layout and variant strategies.
+
 ## Project Structure
 
 ```
@@ -160,10 +167,11 @@ agency-foundation/
 │   ├── (auth)/              # Authentication routes
 │   ├── (dashboard)/         # Dashboard routes  
 │   ├── api/                 # API endpoints
-│   ├── components/          # All UI components (flat, 21 files)
+│   ├── components/          # All UI components (flat, 20 files)
 │   ├── icons/               # Icon components (separate from UI)
 │   └── styles/themes/       # Theme CSS files (5 variations)
-├── context/                 # Documentation (README.md, tech-stack.md)
+├── context/                 # Documentation and checkpoints
+│   ├── checkpoints/         # Compliance checkpoints and system
 ├── config/                  # Application configuration
 ├── lib/                     # Utilities, hooks, validation
 ├── types/                   # Shared TypeScript types
@@ -191,7 +199,7 @@ pnpm prisma studio          # Open database GUI
 To use any component in a new project:
 
 1. **Copy the component file** - Single `.tsx` file from `app/components/`
-2. **Install npm dependencies** - Check component file imports (typically `clsx`, `tailwind-merge`, and Radix UI packages)
+2. **Install npm dependencies** - Check component file imports (typically `clsx` and `tailwind-merge`)
 3. **Copy design tokens** - Relevant CSS variables from `app/styles/themes/default.css`
 4. **Import and use** - Component works immediately, no refactoring needed
 

@@ -69,6 +69,8 @@ When building components, think reuse. Your Button, Card, Modal, Form inputs—t
 
 This library becomes your moat. Each project strengthens it. Each client validates it. After five years, you have a proprietary asset that competitors can't replicate.
 
+> **Layout Patterns:** Our approach to building purpose-built layout components (PropertyGrid, FilterSidebar, DataTable) is detailed in [layout-architecture.md](./layout-architecture.md).
+
 ---
 
 ## Styling Strategy: Theming & Adaptability
@@ -143,6 +145,8 @@ app/
       dashboard.css
   layout.tsx  // loads appropriate theme
 ```
+
+> **Further Reading:** See [layout-architecture.md](./layout-architecture.md) for detailed implementation patterns, semantic component examples, and responsive layout strategies.
 
 ---
 
@@ -450,6 +454,7 @@ project-name/
 │   │   ├── Card.tsx
 │   │   ├── Dialog.tsx
 │   │   ├── DropdownMenu.tsx
+│   │   ├── EmptyState.tsx
 │   │   ├── FileGallery.tsx
 │   │   ├── Footer.tsx
 │   │   ├── Header.tsx
@@ -459,16 +464,22 @@ project-name/
 │   │   ├── ItemForm.tsx
 │   │   ├── LoginForm.tsx
 │   │   ├── Navigation.tsx
-│   │   ├── PropertyCard.tsx
+│   │   ├── PageHeader.tsx
+│   │   ├── PageSection.tsx
 │   │   ├── SettingsForm.tsx
 │   │   ├── Sidebar.tsx
-│   │   ├── Skeleton.tsx
-│   │   └── Textarea.tsx
+│   │   └── Skeleton.tsx
 │   ├── icons/
 │   │   ├── CancelIcon.tsx
+│   │   ├── CloseIcon.tsx
+│   │   ├── FileIcon.tsx
+│   │   ├── GripVerticalIcon.tsx
 │   │   ├── LoadingIcon.tsx
 │   │   ├── MenuIcon.tsx
-│   │   └── SaveIcon.tsx
+│   │   ├── PlusIcon.tsx
+│   │   ├── SaveIcon.tsx
+│   │   ├── SpinnerIcon.tsx
+│   │   └── UploadIcon.tsx
 │   ├── styles/
 │   │   ├── globals.css
 │   │   └── themes/
@@ -481,8 +492,13 @@ project-name/
 │   ├── page.tsx
 │   └── error.tsx
 ├── context/
+│   ├── checkpoints/
+│   │   ├── checkpoint-system.md
+│   │   └── checkpoint-N.md
 │   ├── README.md
-│   └── tech-stack.md
+│   ├── philosophy.md
+│   ├── tech-stack.md
+│   └── layout-architecture.md
 ├── lib/
 │   ├── prisma.ts
 │   ├── auth.ts

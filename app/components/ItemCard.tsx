@@ -18,24 +18,65 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Props for the ItemCard component.
+ *
+ * ItemCard is a smart component that handles inline editing, file attachments,
+ * and drag-and-drop reordering. It's designed for optimistic UI patterns where
+ * changes feel instant while syncing in the background.
+ */
 export interface ItemCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+  /** Unique identifier for the item, used for file attachment management */
   itemId?: string
+  /** Display title of the item (null/undefined shows 'N/A' in view mode) */
   title?: string | null
+  /** Long-form description text (null/undefined shows 'N/A' in view mode) */
   description?: string | null
+  /** Enable inline editing mode with double-click to edit */
   editable?: boolean
+  /**
+   * Callback when user saves title/description edits.
+   * Called with the new values after user clicks save or presses Enter.
+   */
   onSave?: (data: { title: string; description: string }) => void
+  /** Callback when user clicks Edit in the dropdown menu */
   onEdit?: () => void
+  /** Callback when user clicks Delete in the dropdown menu */
   onDelete?: () => void
+  /** Callback when user clicks Duplicate in the dropdown menu */
   onDuplicate?: () => void
+  /**
+   * Callback when user cancels editing.
+   * For new empty items, this removes the item immediately.
+   * For existing items, prompts to confirm discarding changes.
+   */
   onCancel?: () => void
+  /**
+   * Drag handle props from drag-and-drop library.
+   * Spread these onto the grip icon element to enable dragging.
+   */
   dragHandleProps?: React.HTMLAttributes<HTMLDivElement>
+  /** Whether this card is currently being dragged (adds shadow effect) */
   isDragging?: boolean
+  /** Auto-focus the title field on mount (for newly created items) */
   autoFocus?: boolean
+  /** Placeholder text shown in empty title field during editing */
   titlePlaceholder?: string
+  /** Placeholder text shown in empty description field during editing */
   descriptionPlaceholder?: string
+  /** Array of file attachments to display in the expandable file grid */
   attachments?: Attachment[]
+  /** Callback when user adds files (not currently wired to UI in this component) */
   onFilesAdded?: (files: File[]) => void
+  /**
+   * Callback when user removes an attachment.
+   * Called with the attachment ID to remove.
+   */
   onFileRemove?: (attachmentId: string) => void
+  /**
+   * Visual indicator for background save operations.
+   * Shows loading spinner instead of menu icon when true.
+   */
   isSaving?: boolean
 }
 

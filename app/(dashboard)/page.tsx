@@ -1,10 +1,17 @@
+import { PageHeader } from '@/app/components/PageHeader'
+import { EmptyState } from '@/app/components/EmptyState'
+
 export default function DashboardPage() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-      <p className="text-muted-foreground">
-        Dashboard overview placeholder - add your analytics, stats, and widgets here
-      </p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Dashboard"
+        description="Track your business metrics and recent activity"
+      />
+      <EmptyState
+        title="Welcome to Your Dashboard"
+        description="Your business overview will appear here once you add data"
+      />
     </div>
   )
 }

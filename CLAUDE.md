@@ -29,7 +29,7 @@ All UI components live in `app/components/` with PascalCase naming. No subfolder
 
 **10 icons in `app/icons/`:** CancelIcon, CloseIcon, FileIcon, GripVerticalIcon, LoadingIcon, MenuIcon, PlusIcon, SaveIcon, SpinnerIcon, UploadIcon
 
-**Dependencies removed:** All Radix UI packages and lucide-react. Components are now fully owned implementations.
+**No external UI libraries:** All Radix UI packages and lucide-react have been removed. Components are fully owned implementations.
 
 ### Self-Contained Components
 
@@ -91,8 +91,8 @@ app/
 ├── (auth)/                 # Auth routes (login, signup)
 ├── (dashboard)/            # Protected dashboard routes
 ├── api/                    # API endpoints
-├── components/             # All UI components (flat, 17 files)
-├── icons/                  # Icon components (4 files)
+├── components/             # All UI components (flat, 20 files)
+├── icons/                  # Icon components (10 files)
 ├── styles/
 │   ├── globals.css         # Global styles, Tailwind directives
 │   └── themes/             # Theme CSS files
@@ -120,6 +120,13 @@ config/
 ├── fonts.ts                # Font family configuration
 ├── icons.ts                # Icon configuration
 └── env.ts                  # Environment variable validation
+
+context/                    # Architecture documentation
+├── checkpoints/            # Compliance checkpoints
+├── philosophy.md           # Core philosophy
+├── tech-stack.md           # Technical implementation
+├── README.md               # Overview
+└── layout-architecture.md  # Layout patterns
 
 prisma/
 ├── schema.prisma           # Database schema (User, Item, Attachment)
@@ -195,3 +202,22 @@ This codebase is designed for compound growth:
 - Year 5: Velocity competitors can't touch
 
 Every enhancement builds equity in a system that transcends any single project.
+
+## Compliance Requirements
+
+Before making changes, verify alignment with `/context/` documentation. Key rules:
+
+**Component changes must update documentation:**
+- If component count changes → Update CLAUDE.md, README.md, tech-stack.md, philosophy.md
+- If icon count changes → Update CLAUDE.md, README.md, tech-stack.md
+
+**Never add forbidden dependencies:**
+- No Shadcn/UI, Material-UI, Chakra, or component libraries
+- No Radix UI (build owned primitives instead)
+- No lucide-react (use owned SVG icons in `app/icons/`)
+
+**Pages must compose components:**
+- Use PageHeader, PageSection, EmptyState for structure
+- No bare `<h1>`, `<p>`, `<div>` with styling - use semantic components
+
+See `/context/checkpoints/checkpoint-system.md` for full compliance checklist.

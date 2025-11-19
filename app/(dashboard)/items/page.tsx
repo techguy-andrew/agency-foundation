@@ -1,10 +1,17 @@
+import { PageHeader } from '@/app/components/PageHeader'
+import { EmptyState } from '@/app/components/EmptyState'
+
 export default function ItemsPage() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Items</h1>
-      <p className="text-muted-foreground">
-        Items list placeholder - see /demo for a working example
-      </p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Items"
+        description="Manage your items and attachments"
+      />
+      <EmptyState
+        title="No Items Yet"
+        description="See /demo for a working example with full optimistic update functionality"
+      />
     </div>
   )
 }
