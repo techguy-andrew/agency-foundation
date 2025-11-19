@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { Reorder, useDragControls } from "framer-motion"
-import { Plus, GripVertical } from "lucide-react"
 import { toast, Toaster } from "sonner"
+import { PlusIcon } from "@/app/icons/PlusIcon"
+import { GripVerticalIcon } from "@/app/icons/GripVerticalIcon"
 import { useQueryClient } from "@tanstack/react-query"
 import { ItemCard } from "@/app/components/ItemCard"
 import { Button } from "@/app/components/Button"
+import { PageHeader } from "@/app/components/PageHeader"
+import { EmptyState } from "@/app/components/EmptyState"
 import type { Item, Attachment } from "@/types"
 import {
   useCreateItem,
@@ -78,7 +81,7 @@ function ReorderableItem({
             }
           }}
         >
-          <GripVertical className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+          <GripVerticalIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
         </div>
 
         {/* Item Card */}
@@ -349,8 +352,8 @@ export default function DemoPage() {
         position="bottom-center"
         toastOptions={{
           style: {
-            background: '#10b981',
-            color: 'white',
+            background: 'hsl(var(--success))',
+            color: 'hsl(var(--success-foreground))',
             border: 'none',
             borderRadius: '9999px',
             padding: '8px 16px',
@@ -364,12 +367,10 @@ export default function DemoPage() {
 
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">ItemCard Demo</h1>
-          <p className="text-muted-foreground">
-            A fully functional demonstration with optimistic updates for instant-feel interactions.
-          </p>
-        </div>
+        <PageHeader
+          title="ItemCard Demo"
+          description="A fully functional demonstration with optimistic updates for instant-feel interactions."
+        />
 
         {/* Add Button */}
         <div className="flex items-center justify-between">
@@ -380,18 +381,17 @@ export default function DemoPage() {
             onClick={handleNewItem}
             className="gap-2"
           >
-            <Plus className="h-4 w-4" />
+            <PlusIcon className="h-4 w-4" />
             Add Item
           </Button>
         </div>
 
         {/* Items List */}
         {items.length === 0 ? (
-          <div className="text-center py-12 border-2 border-dashed rounded-lg">
-            <p className="text-muted-foreground">
-              No items yet. Click "Add Item" to get started.
-            </p>
-          </div>
+          <EmptyState
+            title="No items yet"
+            description="Click 'Add Item' to get started."
+          />
         ) : (
           <Reorder.Group
             axis="y"

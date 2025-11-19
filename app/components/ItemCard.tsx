@@ -1,28 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/app/components/Card'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/app/components/DropdownMenu'
-import { Button } from '@/app/components/Button'
-import { GripVertical, FileText } from 'lucide-react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { MenuIcon } from '@/app/icons/MenuIcon'
 import { LoadingIcon } from '@/app/icons/LoadingIcon'
 import { SaveIcon } from '@/app/icons/SaveIcon'
 import { CancelIcon } from '@/app/icons/CancelIcon'
-import { FileGallery } from '@/app/components/FileGallery'
+import { GripVerticalIcon } from '@/app/icons/GripVerticalIcon'
+import { FileIcon } from '@/app/icons/FileIcon'
 import type { Attachment } from '@/types'
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -86,8 +72,11 @@ export function ItemCard({
   const [originalDescription, setOriginalDescription] = React.useState(safeDescription)
   const [isExpanded, setIsExpanded] = React.useState(false)
   const [attachments, setAttachments] = React.useState<Attachment[]>(initialAttachments)
+  const [menuOpen, setMenuOpen] = React.useState(false)
   const titleRef = React.useRef<HTMLDivElement>(null)
   const descriptionRef = React.useRef<HTMLDivElement>(null)
+  const menuRef = React.useRef<HTMLDivElement>(null)
+  const menuTriggerRef = React.useRef<HTMLButtonElement>(null)
 
   React.useEffect(() => {
     setTempTitle(safeTitle)
@@ -109,6 +98,37 @@ export function ItemCard({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Run only once on mount
+
+  // Handle click outside for dropdown menu
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node) &&
+        menuTriggerRef.current &&
+        !menuTriggerRef.current.contains(e.target as Node)
+      ) {
+        setMenuOpen(false)
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && menuOpen) {
+        setMenuOpen(false)
+        menuTriggerRef.current?.focus()
+      }
+    }
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [menuOpen])
 
   const handleEdit = () => {
     setIsEditing(true)
@@ -194,16 +214,24 @@ export function ItemCard({
     }
   }
 
+  const handleMenuItemClick = (action: () => void) => {
+    setMenuOpen(false)
+    action()
+  }
+
+  const isImage = (type: string) => type.startsWith('image/')
+
   return (
-    <Card
+    <div
       className={cn(
-        'w-full h-full transition-shadow',
+        'rounded-lg border bg-card text-card-foreground shadow-sm w-full h-full transition-shadow',
         isDragging && 'shadow-lg',
         className
       )}
       {...props}
     >
-      <CardHeader className="relative p-4 sm:p-6">
+      {/* Card Header */}
+      <div className="flex flex-col gap-2 p-4 sm:p-6 relative">
         <div className={cn(
           "grid gap-4 sm:gap-6 items-start w-full",
           dragHandleProps ? "grid-cols-[auto,1fr]" : "grid-cols-[1fr]"
@@ -217,7 +245,7 @@ export function ItemCard({
                 dragHandleProps.className
               )}
             >
-              <GripVertical className="h-5 w-5" />
+              <GripVerticalIcon className="h-5 w-5" />
             </div>
           )}
 
@@ -226,14 +254,15 @@ export function ItemCard({
           )}
             onDoubleClick={() => editable && !isEditing && handleEdit()}
           >
-            <CardTitle
+            {/* Title */}
+            <div
               ref={titleRef}
               contentEditable={isEditing}
               suppressContentEditableWarning
               onKeyDown={handleKeyDown}
               data-placeholder={isEditing ? titlePlaceholder : undefined}
               className={cn(
-                "outline-none",
+                "text-2xl font-semibold leading-none tracking-tight outline-none",
                 "min-h-[1.75rem]",
                 "leading-7",
                 "text-base sm:text-lg lg:text-xl",
@@ -244,16 +273,17 @@ export function ItemCard({
               )}
             >
               {safeTitle || (isEditing ? '' : 'N/A')}
-            </CardTitle>
+            </div>
 
-            <CardDescription
+            {/* Description */}
+            <div
               ref={descriptionRef}
               contentEditable={isEditing}
               suppressContentEditableWarning
               onKeyDown={handleKeyDown}
               data-placeholder={isEditing ? descriptionPlaceholder : undefined}
               className={cn(
-                "outline-none",
+                "text-sm text-muted-foreground outline-none",
                 "min-h-[1.25rem]",
                 "leading-5",
                 "text-sm sm:text-base",
@@ -264,11 +294,11 @@ export function ItemCard({
               )}
             >
               {safeDescription || (isEditing ? '' : 'N/A')}
-            </CardDescription>
+            </div>
           </div>
         </div>
 
-        {/* Menu button - absolutely positioned in top right corner with fixed width */}
+        {/* Menu button - absolutely positioned in top right corner */}
         {(editable || onEdit || onDelete || onDuplicate) && (
           <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-[150px] flex justify-end">
             {isEditing ? (
@@ -290,57 +320,69 @@ export function ItemCard({
                 </button>
               </div>
             ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild disabled={isSaving}>
-                  <button
-                    className="p-0 m-0 border-0 bg-transparent cursor-pointer outline-none focus:outline-none hover:opacity-80 transition-opacity"
-                    aria-label="More options"
-                    disabled={isSaving}
-                  >
-                    {isSaving ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 1,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      >
-                        <LoadingIcon className="h-8 w-8" />
-                      </motion.div>
-                    ) : (
-                      <MenuIcon className="h-8 w-8" />
-                    )}
-                  </button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end">
-                  {(editable || onEdit) && (
-                    <DropdownMenuItem onClick={editable ? handleEdit : onEdit}>
-                      Edit
-                    </DropdownMenuItem>
-                  )}
-
-                  {onDuplicate && (
-                    <DropdownMenuItem onClick={onDuplicate}>
-                      Duplicate
-                    </DropdownMenuItem>
-                  )}
-
-                  {onDelete && (
-                    <DropdownMenuItem
-                      onClick={onDelete}
-                      className="text-destructive focus:text-destructive"
+              <div className="relative">
+                <button
+                  ref={menuTriggerRef}
+                  className="p-0 m-0 border-0 bg-transparent cursor-pointer outline-none focus:outline-none hover:opacity-80 transition-opacity"
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  aria-label="More options"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
                     >
-                      Delete
-                    </DropdownMenuItem>
+                      <LoadingIcon className="h-8 w-8" />
+                    </motion.div>
+                  ) : (
+                    <MenuIcon className="h-8 w-8" />
                   )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </button>
+
+                {/* Inline Dropdown Menu */}
+                {menuOpen && (
+                  <div
+                    ref={menuRef}
+                    className="absolute right-0 top-full mt-1 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+                  >
+                    {(editable || onEdit) && (
+                      <button
+                        className="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        onClick={() => handleMenuItemClick(editable ? handleEdit : onEdit!)}
+                      >
+                        Edit
+                      </button>
+                    )}
+
+                    {onDuplicate && (
+                      <button
+                        className="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        onClick={() => handleMenuItemClick(onDuplicate)}
+                      >
+                        Duplicate
+                      </button>
+                    )}
+
+                    {onDelete && (
+                      <button
+                        className="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-destructive"
+                        onClick={() => handleMenuItemClick(onDelete)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}
-      </CardHeader>
+      </div>
 
       {/* File count badge and accordion toggle */}
       {itemId && (
@@ -360,27 +402,57 @@ export function ItemCard({
                   isExpanded ? "rotate-0" : "-rotate-90"
                 )}
               />
-              Files
+              Files ({attachments.length})
             </span>
           </button>
         </div>
       )}
 
-      {/* File Gallery (when expanded) or children */}
+      {/* Inline File Grid (when expanded) or children */}
       {((itemId && isExpanded) || children) && (
-        <CardContent className="p-4 sm:p-6 pt-0 w-full">
-          {itemId && isExpanded && (
-            <FileGallery
-              attachments={attachments}
-              onFilesAdded={onFilesAdded}
-              onFileRemove={onFileRemove}
-              editable={editable}
-            />
+        <div className="p-4 sm:p-6 pt-0 w-full">
+          {itemId && isExpanded && attachments.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {attachments.map((attachment) => (
+                <div
+                  key={attachment.id}
+                  className="relative group"
+                >
+                  <div className="aspect-square rounded-lg border bg-muted overflow-hidden">
+                    {isImage(attachment.type) ? (
+                      <img
+                        src={attachment.url}
+                        alt={attachment.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center p-2">
+                        <FileIcon className="h-8 w-8 text-muted-foreground mb-1" />
+                        <p className="text-xs text-center text-muted-foreground truncate w-full">
+                          {attachment.name}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  {editable && onFileRemove && (
+                    <button
+                      className="absolute top-1 right-1 h-5 w-5 rounded-sm bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs"
+                      onClick={() => onFileRemove(attachment.id)}
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {itemId && isExpanded && attachments.length === 0 && (
+            <p className="text-sm text-muted-foreground">No files attached</p>
           )}
           {children}
-        </CardContent>
+        </div>
       )}
-    </Card>
+    </div>
   )
 }
 

@@ -1,7 +1,8 @@
-```markdown
-# Tech Stack Reference Guide (v5)
+# Tech Stack Reference Guide
 
 Our philosophy: build durable, portable, customizable software that lasts. Own your foundation.
+
+---
 
 ## Core Philosophy
 
@@ -13,37 +14,48 @@ We don't use external component libraries (Shadcn, Material-UI, etc.). Instead, 
 - **Customization** - We adapt to client needs, not client needs to us
 - **Compound Growth** - Each project strengthens our reusable asset library
 
+---
+
 ## Tech Stack
 
 ### Languages & Frameworks
 
-- **TypeScript** - Type safety and clarity
-- **JavaScript** - Runtime language
-- **Next.js** - Full-stack React framework (API routes, server components, deployment)
-- **React** - UI library for building components
+- **TypeScript** - Type safety and clarity throughout the entire stack
+- **JavaScript** - Runtime language of the web
+- **Next.js 16** - Full-stack React framework (App Router, API routes, server components)
+- **React** - UI library for building component-driven interfaces
 
 ### Styling & Animation
 
-- **Tailwind CSS** - Utility-first CSS for rapid, consistent theming across clients
+- **Tailwind CSS v4** - Utility-first CSS with design tokens via CSS custom properties
 - **CSS Custom Properties** - Native browser variables for runtime theming and client adaptation
-- **Motion** (formerly Framer Motion) - Smooth animations and transitions
-- **SVG Icons** - Downloaded and integrated directly into projects
-- **Google Fonts** - Typography
+- **Motion** (formerly Framer Motion) - Smooth, professional animations and transitions
+- **SVG Icons** - Downloaded and integrated directly into projects (no icon libraries)
+- **Google Fonts** - Typography served via Next.js font optimization
 
 ### Backend & Database
 
-- **Next.js API Routes** - Serverless backend
-- **Prisma** - ORM for database operations
-- **Neon** - PostgreSQL database hosting
+- **Next.js API Routes** - Serverless backend with type-safe endpoints
+- **Prisma** - Type-safe ORM for database operations
+- **Neon** - Serverless PostgreSQL database with branching and instant provisioning
+
+### State Management
+
+- **React Query** - Server state management with optimistic updates and caching
+- **React Context** - Client-side global state when needed
+- **URL State** - Search params, filters, and navigation state
 
 ### Authentication
 
-- **Clerk** - User auth and management (industry standard, unlikely to disappear)
+- **Clerk** - User authentication and management (industry standard, battle-tested, unlikely to disappear)
 
 ### Developer Tools
 
-- **pnpm** - Fast, efficient package manager
-- **Vercel** - Hosting and deployment
+- **pnpm** - Fast, efficient package manager with better disk space usage
+- **Vercel** - Zero-config deployment with preview environments
+- **TypeScript Strict Mode** - Catch errors at compile time, not runtime
+
+---
 
 ## Component Library Strategy
 
@@ -51,10 +63,13 @@ When building components, think reuse. Your Button, Card, Modal, Form inputs—t
 
 - **Themeable** - Use CSS custom properties and Tailwind config so styling adapts to each client
 - **Prop-driven** - Control behavior and appearance through props, not hardcoding
-- **Documented** - Future you and your team need to understand intent
-- **Tested** - Reusable components must work reliably
+- **Self-contained** - Inline utilities, no external dependencies that break portability
+- **Documented** - Props interfaces serve as documentation (clear, descriptive names)
+- **Tested** - Reusable components must work reliably across projects
 
-This library becomes your moat.
+This library becomes your moat. Each project strengthens it. Each client validates it. After five years, you have a proprietary asset that competitors can't replicate.
+
+---
 
 ## Styling Strategy: Theming & Adaptability
 
@@ -62,24 +77,47 @@ The cornerstone of our reusability is how we handle styling. We use a **Tailwind
 
 ### How It Works
 
-Your `tailwind.config.js` defines all design tokens as CSS variables: `--color-primary`, `--color-secondary`, `--spacing-xs`, etc. Components reference these tokens through Tailwind utilities. Separate theme CSS files (one per client, one per season/context) override these variables with different values. Load a different theme file, the entire app reskins instantly.
+Your `tailwind.config.ts` defines all design tokens as CSS variables: `--color-primary`, `--color-secondary`, `--spacing-xs`, etc. Components reference these tokens through Tailwind utilities (`bg-primary`, `text-success`). Separate theme CSS files (one per client, one per season/context) override these variables with different values. Load a different theme file, the entire app reskins instantly.
 
 ### Scenario One: Different Clients, Same Components
 
-When you build a Banner or Sidebar component, it needs to work for Client A with their branding and Client B with theirs, without modifying the component code itself. Create separate CSS theme files for each client (client-a.css, client-b.css) that set different values for the same variables (`--color-primary`, `--spacing-sm`, etc). Your components always reference the tokens through Tailwind, never hardcoded colors. Loading a different theme file automatically reskins the entire application. You write the component once, swap the CSS file, and the app transforms for the new client with zero component modifications.
+When you build a Banner or Sidebar component, it needs to work for Client A with their branding and Client B with theirs, without modifying the component code itself. 
+
+**Implementation:**
+1. Create separate CSS theme files for each client (`client-a.css`, `client-b.css`)
+2. Each file sets different values for the same variables (`--color-primary`, `--spacing-sm`)
+3. Components always reference tokens through Tailwind (`bg-primary`), never hardcoded colors
+4. Load the appropriate theme file in `app/layout.tsx` based on environment variable or subdomain
+5. The entire application reskins instantly—same components, zero code changes
+
+**Result:** You write the component once, swap the CSS file, and the app transforms for the new client with zero component modifications.
 
 ### Scenario Two: Same Component, Different Contexts
 
-A Banner component should look different at Christmas than Halloween. A Sidebar might have different styling for different app sections. Create multiple theme CSS files (christmas.css, halloween.css, landing.css, dashboard.css) that override the same variables with different values. At runtime, your app loads whichever theme applies—based on date, user preference, route, or environment variable. The component itself never changes; it just reads whatever variables are currently defined. You get unlimited styling variations from a single component, themes swap instantly, and the system stays maintainable because the source of truth is always the CSS variables.
+A Banner component should look different at Christmas than Halloween. A Sidebar might have different styling for different app sections.
+
+**Implementation:**
+1. Create multiple theme CSS files (`christmas.css`, `halloween.css`, `landing.css`, `dashboard.css`)
+2. Each file overrides the same variables with different values
+3. At runtime, your app loads whichever theme applies (based on date, user preference, route, or environment variable)
+4. The component itself never changes—it just reads whatever variables are currently defined
+
+**Result:** Unlimited styling variations from a single component. Themes swap instantly. System stays maintainable because the source of truth is always the CSS variables.
 
 ### Why This Approach Wins
 
-This method—Tailwind config as tokens plus CSS custom properties for theming—is the industry standard used by Vercel, Stripe, and professional SaaS companies. CSS variables are native browser standards that will exist in 20 years. Tailwind will outlast any component library. You're building on the bedrock of web standards, not framework trends. You can swap themes at build time (deploy different CSS per client) or runtime (same app, user picks theme). It scales from two clients to two hundred without architectural changes. This is the only approach that actually lasts.
+This method—Tailwind config as tokens plus CSS custom properties for theming—is the industry standard used by Vercel, Stripe, and professional SaaS companies. 
+
+**Durability:** CSS variables are native browser standards that will exist in 20 years. Tailwind will outlast any component library. You're building on the bedrock of web standards, not framework trends.
+
+**Flexibility:** You can swap themes at build time (deploy different CSS per client) or runtime (same app, user picks theme). It scales from two clients to two hundred without architectural changes.
+
+**Longevity:** This is the only approach that actually lasts. Component libraries deprecate. Framework-specific patterns break. Web standards endure.
 
 ### File Structure
 
 ```
-src/
+app/
   components/
     Banner.tsx
     Sidebar.tsx
@@ -93,17 +131,226 @@ src/
     LoadingIcon.tsx
     MenuIcon.tsx
     // icon components separate from UI components
-  themes/
-    default.css
-    client-a.css
-    client-b.css
-    christmas.css
-    halloween.css
-    landing.css
-    dashboard.css
-  app/
-    layout.tsx  // loads appropriate theme
+  styles/
+    globals.css
+    themes/
+      default.css
+      client-a.css
+      client-b.css
+      christmas.css
+      halloween.css
+      landing.css
+      dashboard.css
+  layout.tsx  // loads appropriate theme
 ```
+
+---
+
+## Interaction Strategy: Optimistic Updates
+
+The cornerstone of our user experience is how we handle mutations. We use an **optimistic update pattern** where the UI responds instantly and syncs with the server in the background.
+
+### The Philosophy
+
+Modern users don't wait. They've been trained by native mobile apps, desktop software, and premium SaaS products to expect immediate feedback. When they click "Save," something must happen *now*—not after a loading spinner, not after a network round-trip, not after a "please wait" message.
+
+**The old way (traditional web forms):**
+1. User clicks "Save"
+2. Button shows loading spinner
+3. Network request takes 200-2000ms
+4. UI updates after server responds
+5. User waits, uncertainty builds
+
+**Our way (optimistic updates):**
+1. User clicks "Save"
+2. UI updates instantly (0ms perceived latency)
+3. Network request happens in background
+4. If it fails, rollback and notify user
+5. User feels in control, app feels fast
+
+This isn't about shaving milliseconds off performance metrics. It's about **perceived quality**. Users judge software by how it *feels*, not by how it performs on benchmarks. An app that responds instantly feels professional, polished, trustworthy. An app that shows spinners feels slow, uncertain, amateur.
+
+**Our standard:** Every mutation should feel instant unless there's a specific justification for displaying a loading state. The burden of proof is on the loading spinner, not on the optimistic update.
+
+### How It Works
+
+1. User performs action (click save, drag item, upload file)
+2. UI updates immediately with expected result
+3. Network request happens in background
+4. On success: reconcile with server response
+5. On error: rollback to previous state, notify user
+
+### Implementation with React Query
+
+We use TanStack Query mutations with the `onMutate`, `onError`, and `onSuccess` callbacks:
+
+```typescript
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { Item } from '@/types'
+
+export function useCreateItem() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    // The actual API call
+    mutationFn: async (data: CreateItemData) => {
+      const response = await fetch('/api/items', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+      return response.json()
+    },
+
+    // STEP 1: Optimistic update (runs immediately)
+    onMutate: async (data) => {
+      // Cancel in-flight queries to prevent race conditions
+      await queryClient.cancelQueries({ queryKey: ['items'] })
+
+      // Snapshot current state for potential rollback
+      const previousItems = queryClient.getQueryData<Item[]>(['items'])
+
+      // Create temporary item with temp ID
+      const tempItem: Item = {
+        id: `temp-${Date.now()}`,
+        ...data,
+        order: 0,
+        attachments: [],
+      }
+
+      // Update cache immediately - UI reflects this instantly
+      queryClient.setQueryData<Item[]>(['items'], (old = []) =>
+        [tempItem, ...old]
+      )
+
+      // Return context for rollback
+      return { previousItems, tempItem }
+    },
+
+    // STEP 2: Handle errors (rollback)
+    onError: (err, variables, context) => {
+      // Restore previous state
+      if (context?.previousItems) {
+        queryClient.setQueryData(['items'], context.previousItems)
+      }
+
+      // Notify user
+      toast.error('Failed to create item. Please try again.')
+    },
+
+    // STEP 3: Handle success (replace temp with real)
+    onSuccess: (newItem, variables, context) => {
+      // Replace temp item with real item from server
+      queryClient.setQueryData<Item[]>(['items'], (old = []) =>
+        old.map(item =>
+          item.id === context?.tempItem.id ? newItem : item
+        )
+      )
+
+      toast.success('Item created')
+    },
+  })
+}
+```
+
+### The Flow
+
+```
+User Action → onMutate (instant UI update) → mutationFn (background API call)
+                                                    ↓
+                                          onSuccess (reconcile)
+                                                 OR
+                                          onError (rollback + notify)
+```
+
+### Key Principles
+
+1. **Cancel outgoing queries** - Prevents race conditions where stale data overwrites optimistic update
+2. **Snapshot previous state** - Always capture current state before modifying for rollback capability
+3. **Use temporary IDs** - Distinguish optimistic items from server-confirmed items (e.g., `temp-${Date.now()}`)
+4. **Return context** - Pass rollback data through the mutation lifecycle
+5. **Replace, don't refetch** - Update specific items in cache rather than refetching entire list (faster, less bandwidth)
+
+### Where It's Used
+
+**Hooks (`lib/hooks/useItems.ts`)** - 5 mutations:
+- `useCreateItem()` - Add new items with temp ID
+- `useUpdateItem()` - Modify title/description instantly
+- `useDeleteItem()` - Remove from list immediately
+- `useDuplicateItem()` - Clone with optimistic copy
+- `useReorderItems()` - Reorder list instantly on drag-drop
+
+**Hooks (`lib/hooks/useAttachments.ts`)** - 2 mutations:
+- `useAddAttachments()` - Show files immediately with upload progress
+- `useRemoveAttachment()` - Remove from gallery instantly
+
+**Components (`app/components/ItemCard.tsx`)** - UI reflects optimistic state:
+- Shows `isSaving` indicator during background persistence
+- Displays temp attachments with upload progress
+- Handles edit/cancel with state restoration
+
+### When to Use It
+
+**Always use optimistic updates for:**
+- CRUD operations (create, update, delete)
+- Reordering and drag-drop
+- File uploads (with progress indicators)
+- User preferences and settings
+- Duplicating and cloning
+
+**Don't use optimistic updates for:**
+- Payment processing (users need confirmation before money moves)
+- Irreversible destructive actions (deleting accounts, purging data)
+- Operations requiring external confirmation
+- Multi-step workflows with dependencies
+
+**The rule:** Default to optimistic. Justify loading states. If you're reaching for a loading spinner, ask: "Why can't this be optimistic?" If you don't have a good answer, make it optimistic.
+
+### Rollback Strategy
+
+When optimistic updates fail, gracefully restore previous state and inform the user:
+
+```typescript
+onMutate: async (data) => {
+  // 1. SNAPSHOT - Capture current state
+  const previousItems = queryClient.getQueryData<Item[]>(['items'])
+
+  // 2. OPTIMISTIC UPDATE - Apply expected changes
+  queryClient.setQueryData<Item[]>(['items'], (old = []) =>
+    old.filter(item => item.id !== data.id)
+  )
+
+  // 3. RETURN CONTEXT - Pass snapshot for rollback
+  return { previousItems }
+},
+
+onError: (err, variables, context) => {
+  // ROLLBACK - Restore exact previous state
+  if (context?.previousItems) {
+    queryClient.setQueryData(['items'], context.previousItems)
+  }
+
+  // NOTIFY - Tell user what happened
+  toast.error('Failed to delete. Item has been restored.')
+},
+```
+
+**User Communication:**
+- Success: "Item saved" (brief, confirming)
+- Error: "Failed to save. Changes reverted." (explains what happened)
+- Retry: "Connection lost. Retrying..." (shows we're handling it)
+
+**Visual Indicators:**
+- Subtle "saving" indicator during background sync
+- Red highlight or shake animation on error
+- Smooth restore animation when rolling back
+
+### Why This Approach Wins
+
+Loading spinners tell users "the software is working." Optimistic updates tell users "it's done." The latter feels professional, instant, trustworthy. The former feels slow, uncertain, amateur.
+
+This is the difference between web forms from 2010 and modern desktop-class applications. We build the latter.
+
+---
 
 ## What We Don't Use
 
@@ -233,12 +480,18 @@ project-name/
 │   ├── layout.tsx
 │   ├── page.tsx
 │   └── error.tsx
+├── context/
+│   ├── README.md
+│   └── tech-stack.md
 ├── lib/
 │   ├── prisma.ts
 │   ├── auth.ts
 │   ├── utils.ts
 │   ├── constants.ts
-│   └── validations.ts
+│   ├── validations.ts
+│   └── hooks/
+│       ├── useItems.ts
+│       └── useAttachments.ts
 ├── types/
 │   ├── index.ts
 │   ├── items.ts
@@ -265,8 +518,6 @@ project-name/
 ├── eslint.config.mjs
 ├── package.json
 ├── pnpm-lock.yaml
-├── README.md
-├── SETUP.md
 └── CHANGELOG.md
 ```
 
@@ -276,7 +527,7 @@ project-name/
 
 Our agency builds applications using a flat component architecture where every UI element lives in a single `/components` folder as a self-contained `.tsx` file with PascalCase naming. This structure makes your entire application's interface visible at a glance and enables true portability—you can copy any component file from one project to another and it works immediately. Think of this as building an ever-growing library of battle-tested components where each client project strengthens your agency's asset base. The goal is drag-and-drop reusability across all projects with minimal to zero modifications needed.
 
-Every component must be self-contained with an explicit props interface defined at the top of the file. Components receive all data through props rather than fetching it internally—for example, a PropertyCard gets a property object passed to it instead of calling database hooks. All styling lives within the component using Tailwind classes that reference design tokens from your tailwind.config.ts for consistency. Shared TypeScript types belong in a separate `/types` folder so multiple components can reference the same data structures without tight coupling. If a component needs the cn() utility for class merging, inline it directly in the component file rather than importing from a shared lib folder.
+Every component must be self-contained with an explicit props interface defined at the top of the file. Components receive all data through props rather than fetching it internally—for example, a PropertyCard gets a property object passed to it instead of calling database hooks. All styling lives within the component using Tailwind classes that reference design tokens from your `tailwind.config.ts` for consistency. Shared TypeScript types belong in a separate `/types` folder so multiple components can reference the same data structures without tight coupling. If a component needs the `cn()` utility for class merging, inline it directly in the component file rather than importing from a shared lib folder.
 
 Pages should be pure compositions of components with zero hardcoded UI elements—think of arranging Lego blocks where the page file just imports components and arranges them. A dashboard page imports PageLayout, PageHeader, StatsGrid, and DataTable components, then composes them together without writing any direct HTML or styling. This composition-over-configuration approach ensures you're always building reusable pieces rather than one-off page code. When you need similar functionality in another project, you copy the component files and compose them differently for that client's needs.
 
@@ -315,12 +566,10 @@ Before committing any component to `/components`, verify:
 
 ### Documentation
 ☐ Props interface serves as documentation (clear, descriptive names)  
-☐ Add component to `COMPONENTS.md` with purpose, props, and dependencies  
 ☐ Note if component is "smart" (handles logic/data) or "presentational" (just renders)  
 
 ---
 
-**Version:** 5.0  
+**Version:** 5.1  
 **Last Updated:** November 2025  
 **Philosophy:** Own your foundation. Build to last.
-```

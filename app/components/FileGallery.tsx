@@ -2,7 +2,10 @@
 
 import React, { useState, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
-import { X, File, Image as ImageIcon, Upload, Loader2 } from "lucide-react"
+import { CloseIcon } from "@/app/icons/CloseIcon"
+import { FileIcon } from "@/app/icons/FileIcon"
+import { UploadIcon } from "@/app/icons/UploadIcon"
+import { SpinnerIcon } from "@/app/icons/SpinnerIcon"
 import { Button } from "@/app/components/Button"
 import {
   Dialog,
@@ -74,7 +77,7 @@ export function FileGallery({
           )}
         >
           <input {...getInputProps()} />
-          <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+          <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">
             {isDragActive
               ? "Drop files here..."
@@ -110,7 +113,7 @@ export function FileGallery({
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                      <File className={cn(
+                      <FileIcon className={cn(
                         "h-12 w-12 text-muted-foreground mb-2",
                         isUploading && "opacity-50"
                       )} />
@@ -125,10 +128,10 @@ export function FileGallery({
 
                   {/* Upload Progress Overlay */}
                   {isUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
                       <div className="text-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-white mx-auto mb-2" />
-                        <p className="text-xs text-white font-medium">Uploading...</p>
+                        <SpinnerIcon className="h-8 w-8 text-background mx-auto mb-2" />
+                        <p className="text-xs text-background font-medium">Uploading...</p>
                       </div>
                     </div>
                   )}
@@ -142,15 +145,15 @@ export function FileGallery({
                   className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => handleRemove(e, attachment.id)}
                 >
-                  <X className="h-4 w-4" />
+                  <CloseIcon className="h-4 w-4" />
                 </Button>
               )}
 
               {/* File info overlay - hidden during upload */}
               {!isUploading && (
-                <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute bottom-0 left-0 right-0 bg-foreground/60 text-background p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <p className="text-xs truncate">{attachment.name}</p>
-                  <p className="text-xs text-gray-300">
+                  <p className="text-xs text-muted-foreground">
                     {(attachment.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -176,7 +179,7 @@ export function FileGallery({
               />
             ) : (
               <div className="flex flex-col items-center justify-center py-12">
-                <File className="h-24 w-24 text-muted-foreground mb-4" />
+                <FileIcon className="h-24 w-24 text-muted-foreground mb-4" />
                 <p className="text-lg font-medium">{selectedFile?.name}</p>
                 <p className="text-sm text-muted-foreground mt-2">
                   {selectedFile && (selectedFile.size / 1024).toFixed(1)} KB
