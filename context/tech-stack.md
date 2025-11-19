@@ -1,4 +1,5 @@
-# Tech Stack Reference Guide (v4)
+```markdown
+# Tech Stack Reference Guide (v5)
 
 Our philosophy: build durable, portable, customizable software that lasts. Own your foundation.
 
@@ -80,12 +81,18 @@ This method—Tailwind config as tokens plus CSS custom properties for theming�
 ```
 src/
   components/
-    ui/
-      Banner.tsx
-      Sidebar.tsx
-      Button.tsx
-      Card.tsx
-      // your reusable component library
+    Banner.tsx
+    Sidebar.tsx
+    Button.tsx
+    Card.tsx
+    PropertyCard.tsx
+    ItemForm.tsx
+    // your entire component library, flat and visible
+  icons/
+    CancelIcon.tsx
+    LoadingIcon.tsx
+    MenuIcon.tsx
+    // icon components separate from UI components
   themes/
     default.css
     client-a.css
@@ -158,8 +165,11 @@ The technologies you choose should be the ones that will be here forever. TypeSc
 
 This is the agency advantage. Own it.
 
+---
+
 ## File Structure Schema - Implement Exactly As Shown
 
+```
 project-name/
 ├── app/
 │   ├── (auth)/
@@ -188,28 +198,30 @@ project-name/
 │   │       └── clerk/
 │   │           └── route.ts
 │   ├── components/
-│   │   ├── ui/
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
-│   │   │   ├── dialog.tsx
-│   │   │   ├── badge.tsx
-│   │   │   ├── dropdown-menu.tsx
-│   │   │   ├── input.tsx
-│   │   │   ├── textarea.tsx
-│   │   │   └── index.ts (barrel export)
-│   │   ├── forms/
-│   │   │   ├── ItemForm.tsx
-│   │   │   ├── LoginForm.tsx
-│   │   │   └── SettingsForm.tsx
-│   │   ├── layout/
-│   │   │   ├── Header.tsx
-│   │   │   ├── Sidebar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── Navigation.tsx
-│   │   └── features/
-│   │       ├── ItemCard.tsx
-│   │       ├── FileGallery.tsx
-│   │       └── ItemList.tsx
+│   │   ├── Badge.tsx
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Dialog.tsx
+│   │   ├── DropdownMenu.tsx
+│   │   ├── FileGallery.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   ├── Input.tsx
+│   │   ├── ItemCard.tsx
+│   │   ├── ItemCardSkeleton.tsx
+│   │   ├── ItemForm.tsx
+│   │   ├── LoginForm.tsx
+│   │   ├── Navigation.tsx
+│   │   ├── PropertyCard.tsx
+│   │   ├── SettingsForm.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── Skeleton.tsx
+│   │   └── Textarea.tsx
+│   ├── icons/
+│   │   ├── CancelIcon.tsx
+│   │   ├── LoadingIcon.tsx
+│   │   ├── MenuIcon.tsx
+│   │   └── SaveIcon.tsx
 │   ├── styles/
 │   │   ├── globals.css
 │   │   └── themes/
@@ -256,3 +268,59 @@ project-name/
 ├── README.md
 ├── SETUP.md
 └── CHANGELOG.md
+```
+
+---
+
+## Component Architecture Philosophy
+
+Our agency builds applications using a flat component architecture where every UI element lives in a single `/components` folder as a self-contained `.tsx` file with PascalCase naming. This structure makes your entire application's interface visible at a glance and enables true portability—you can copy any component file from one project to another and it works immediately. Think of this as building an ever-growing library of battle-tested components where each client project strengthens your agency's asset base. The goal is drag-and-drop reusability across all projects with minimal to zero modifications needed.
+
+Every component must be self-contained with an explicit props interface defined at the top of the file. Components receive all data through props rather than fetching it internally—for example, a PropertyCard gets a property object passed to it instead of calling database hooks. All styling lives within the component using Tailwind classes that reference design tokens from your tailwind.config.ts for consistency. Shared TypeScript types belong in a separate `/types` folder so multiple components can reference the same data structures without tight coupling. If a component needs the cn() utility for class merging, inline it directly in the component file rather than importing from a shared lib folder.
+
+Pages should be pure compositions of components with zero hardcoded UI elements—think of arranging Lego blocks where the page file just imports components and arranges them. A dashboard page imports PageLayout, PageHeader, StatsGrid, and DataTable components, then composes them together without writing any direct HTML or styling. This composition-over-configuration approach ensures you're always building reusable pieces rather than one-off page code. When you need similar functionality in another project, you copy the component files and compose them differently for that client's needs.
+
+Before committing any new component, ask yourself: "Could I copy this single file into a fresh project and have it work with minimal changes?" If the answer is no, the component has external dependencies that break portability. Maintain a clear mental separation between smart components that handle data fetching and business logic versus presentational components that just render what they receive—both live in `/components` but presentational ones are your most portable and reusable assets. This philosophy transforms every project into an opportunity to build components that make the next project faster, creating a compounding competitive advantage for your agency.
+
+---
+
+## Component Creation & Editing Checklist
+
+Before committing any component to `/components`, verify:
+
+### Naming & Location
+☐ File uses PascalCase naming (e.g., `PropertyCard.tsx`, `ApplicationForm.tsx`)  
+☐ File is located directly in `/components` folder (flat structure, no subfolders)  
+☐ Component name matches filename exactly  
+
+### Self-Contained Structure
+☐ Props interface is defined at the top of the file  
+☐ All required props are explicitly typed  
+☐ Optional props have `?` modifier and sensible defaults where needed  
+☐ Component receives data through props, never fetches data internally  
+☐ No imports from `/lib/utils` - inline the `cn()` function if needed  
+☐ All styling uses Tailwind classes with design tokens (e.g., `text-success` not `text-green-600`)  
+
+### Dependencies & Imports
+☐ Only imports from: `react`, `clsx`, `tailwind-merge`, npm packages (radix-ui, etc.), and `/types`  
+☐ No imports from other custom components unless absolutely necessary  
+☐ Shared TypeScript types are imported from `/types` folder, not defined in component  
+☐ Component works if copied to a new project with just its file + npm packages  
+
+### Portability Test
+☐ Ask: "Can I copy just this .tsx file to another project and have it work?"  
+☐ If no, refactor to remove external dependencies  
+☐ Component has clear single responsibility (does one thing well)  
+☐ Styling is self-contained (no external CSS files required)  
+
+### Documentation
+☐ Props interface serves as documentation (clear, descriptive names)  
+☐ Add component to `COMPONENTS.md` with purpose, props, and dependencies  
+☐ Note if component is "smart" (handles logic/data) or "presentational" (just renders)  
+
+---
+
+**Version:** 5.0  
+**Last Updated:** November 2025  
+**Philosophy:** Own your foundation. Build to last.
+```

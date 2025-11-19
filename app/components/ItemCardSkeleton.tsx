@@ -1,6 +1,12 @@
 import { Card, CardHeader, CardDescription } from '@/app/components/Card'
 import { Skeleton } from '@/app/components/Skeleton'
-import { cn } from '@/lib/utils'
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+// Inline utility for merging Tailwind classes - makes component portable
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 interface ItemCardSkeletonProps {
   className?: string

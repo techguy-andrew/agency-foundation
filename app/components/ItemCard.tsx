@@ -22,9 +22,15 @@ import { MenuIcon } from '@/app/icons/MenuIcon'
 import { LoadingIcon } from '@/app/icons/LoadingIcon'
 import { SaveIcon } from '@/app/icons/SaveIcon'
 import { CancelIcon } from '@/app/icons/CancelIcon'
-import { cn } from '@/lib/utils'
 import { FileGallery } from '@/app/components/FileGallery'
 import type { Attachment } from '@/types'
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+// Inline utility for merging Tailwind classes - makes component portable
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export interface ItemCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   itemId?: string
