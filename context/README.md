@@ -1,10 +1,10 @@
 # Agency Foundation Template
 
-A production-ready Next.js foundation built on a flat, portable component architecture. This template represents our agency's competitive advantage—a library of self-contained, battle-tested components that make every client project faster than the last.
+A production-ready Next.js foundation built on a flat, portable component architecture. This template is our internal operational tooling—a library of self-contained, battle-tested components that enable consistent, high-quality delivery for every client project.
 
 ## Core Philosophy
 
-**Build once, reuse everywhere.** This isn't a starter template you customize and discard. It's the foundation of a compounding asset library where every component strengthens with each client project.
+**Build once, reuse everywhere.** This isn't a starter template you customize and discard. It's operational infrastructure where every component strengthens with each client project, enabling faster and more consistent delivery.
 
 Every component in this template is:
 - **Self-contained** - Inlined utilities, no external coupling
@@ -14,9 +14,9 @@ Every component in this template is:
 
 ## Why This Matters
 
-Traditional agencies rebuild components for every client. We build once and compose infinitely. After five projects, we're 10x faster than competitors starting from scratch. After fifty projects, we have a proprietary component library worth more than the sum of individual contracts.
+Traditional agencies rebuild components for every client. We build once and compose infinitely. After five projects, we're significantly faster than starting from scratch. After fifty projects, we have a mature component library that enables consistent, reliable delivery across all client engagements.
 
-This is the agency advantage. Own it.
+This systematic approach to knowledge capture ensures quality and efficiency at scale.
 
 ## Tech Stack
 
@@ -234,19 +234,19 @@ Before committing any component, verify:
 - ☐ Component has clear single responsibility
 - ☐ Styling is self-contained (no external CSS files required)
 
-## The Agency Advantage
+## Operational Efficiency
 
-This template isn't just code. It's leverage. Here's what compounds:
+This template isn't just code. It's systematized operational infrastructure. Here's what improves with use:
 
 **After Project 1:** You have 21 components and a working foundation.
 
 **After Project 5:** You have 50+ components tested across multiple clients. Starting new projects takes days instead of weeks.
 
-**After Project 20:** You have 100+ components spanning every common UI pattern. Competitors rebuilding from scratch can't touch your velocity.
+**After Project 20:** You have 100+ components spanning every common UI pattern. Your delivery velocity is significantly faster than starting from scratch.
 
-**After Project 50:** Your component library is a proprietary asset worth more than individual contracts. You can reskin and redeploy faster than anyone else.
+**After Project 50:** Your component library enables consistent, reliable delivery across all engagements. You can reskin and redeploy with confidence.
 
-This is why we own our foundation. This is why we don't use third-party component libraries. This is the moat.
+This is why we own our foundation. This is why we don't use third-party component libraries. This systematic approach enables superior client delivery.
 
 ## Design Philosophy
 
@@ -254,7 +254,7 @@ This is why we own our foundation. This is why we don't use third-party componen
 
 **Build to last** - Use web standards (CSS variables, TypeScript, React) that will exist in 2030.
 
-**Compound growth** - Every client project strengthens the component library for the next client.
+**Operational efficiency** - Every client project strengthens the component library, enabling faster and more reliable delivery.
 
 **Client adaptability** - Theme system enables instant rebranding without touching component code.
 
@@ -269,14 +269,14 @@ This is why we own our foundation. This is why we don't use third-party componen
 5. **Build new components** - Add to library when you need something new
 6. **Backport improvements** - Copy enhanced components back to this template
 
-Each client project makes the foundation stronger. That's compound growth.
+Each client project improves the foundation, enabling faster and more consistent delivery over time.
 
 ## License
 
-Proprietary - Internal agency use only.
+Internal use only.
 
 ---
 
-**Version:** 1.1.0  
-**Last Updated:** November 2025  
+**Version:** 1.1.0
+**Last Updated:** November 2025
 **Philosophy:** Own your foundation. Build to last.
