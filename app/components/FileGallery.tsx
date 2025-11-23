@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
-import { CloseIcon } from "@/app/icons/CloseIcon"
+import { CancelIcon } from "@/app/icons/CancelIcon"
+import { DownloadIcon } from "@/app/icons/DownloadIcon"
 import { FileIcon } from "@/app/icons/FileIcon"
 import { UploadIcon } from "@/app/icons/UploadIcon"
 import { SpinnerIcon } from "@/app/icons/SpinnerIcon"
@@ -13,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/app/components/Dialog"
+import { ConfirmationDialog } from "@/app/components/ConfirmationDialog"
 import type { Attachment } from "@/types"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -38,6 +40,7 @@ export function FileGallery({
   maxFiles = 10,
 }: FileGalleryProps) {
   const [selectedFile, setSelectedFile] = useState<Attachment | null>(null)
+  const [fileToDelete, setFileToDelete] = useState<Attachment | null>(null)
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -56,11 +59,16 @@ export function FileGallery({
 
   const isImage = (type: string) => type.startsWith("image/")
 
-  const handleRemove = (e: React.MouseEvent, attachmentId: string) => {
+  const handleRemoveClick = (e: React.MouseEvent, attachment: Attachment) => {
     e.stopPropagation()
-    if (onFileRemove) {
-      onFileRemove(attachmentId)
+    setFileToDelete(attachment)
+  }
+
+  const handleConfirmDelete = () => {
+    if (fileToDelete && onFileRemove) {
+      onFileRemove(fileToDelete.id)
     }
+    setFileToDelete(null)
   }
 
   return (
@@ -139,21 +147,20 @@ export function FileGallery({
 
               {/* Remove button - disabled during upload */}
               {editable && onFileRemove && !isUploading && (
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={(e) => handleRemove(e, attachment.id)}
+                <button
+                  className="absolute top-2 right-2 p-0 m-0 border-0 bg-transparent cursor-pointer outline-none focus:outline-none text-destructive hover:text-destructive/80 hover:opacity-80 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => handleRemoveClick(e, attachment)}
+                  aria-label="Remove file"
                 >
-                  <CloseIcon className="h-4 w-4" />
-                </Button>
+                  <CancelIcon className="h-6 w-6" />
+                </button>
               )}
 
               {/* File info overlay - hidden during upload */}
               {!isUploading && (
                 <div className="absolute bottom-0 left-0 right-0 bg-foreground/60 text-background p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <p className="text-xs truncate">{attachment.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs">
                     {(attachment.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -167,6 +174,18 @@ export function FileGallery({
       {/* Preview Dialog */}
       <Dialog open={!!selectedFile} onOpenChange={() => setSelectedFile(null)}>
         <DialogContent className="max-w-4xl">
+          {/* Download button - positioned next to close button */}
+          <button
+            className="absolute right-14 top-4 p-0 m-0 border-0 bg-transparent cursor-pointer outline-none focus:outline-none hover:opacity-80 transition-opacity"
+            onClick={() => {
+              if (selectedFile?.url) {
+                window.open(selectedFile.url, "_blank")
+              }
+            }}
+            aria-label="Download file"
+          >
+            <DownloadIcon className="h-8 w-8" />
+          </button>
           <DialogHeader>
             <DialogTitle>{selectedFile?.name}</DialogTitle>
           </DialogHeader>
@@ -199,6 +218,18 @@ export function FileGallery({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        open={!!fileToDelete}
+        onOpenChange={(open) => !open && setFileToDelete(null)}
+        title="Delete File?"
+        description={`Are you sure you want to delete "${fileToDelete?.name}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        isDestructive={true}
+      />
     </div>
   )
 }

@@ -238,14 +238,6 @@ export default function DemoPage() {
 
   // Handle deleting an item with optimistic update
   const handleDelete = async (id: string) => {
-    // Show confirmation for non-empty items
-    const item = items.find((i) => i.id === id)
-    if (item && (item.title || item.description)) {
-      if (!confirm("Are you sure you want to delete this item?")) {
-        return
-      }
-    }
-
     try {
       await deleteItemMutation.mutateAsync({ id })
 

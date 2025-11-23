@@ -25,9 +25,9 @@ All UI components live in `app/components/` with PascalCase naming. No subfolder
 - Entire interface visible at a glance
 - True drag-and-drop portability between projects
 
-**20 components:** Badge, Button, Card, Dialog, DropdownMenu, EmptyState, FileGallery, Footer, Header, Input, ItemCard, ItemCardSkeleton, ItemForm, LoginForm, Navigation, PageHeader, PageSection, SettingsForm, Sidebar, Skeleton
+**21 components:** Badge, Button, Card, ConfirmationDialog, Dialog, DropdownMenu, EmptyState, FileGallery, Footer, Header, Input, ItemCard, ItemCardSkeleton, ItemForm, LoginForm, Navigation, PageHeader, PageSection, SettingsForm, Sidebar, Skeleton
 
-**10 icons in `app/icons/`:** CancelIcon, CloseIcon, FileIcon, GripVerticalIcon, LoadingIcon, MenuIcon, PlusIcon, SaveIcon, SpinnerIcon, UploadIcon
+**12 icons in `app/icons/`:** CancelIcon, ChevronRightIcon, CloseIcon, DownloadIcon, FileIcon, GripVerticalIcon, LoadingIcon, MenuIcon, PlusIcon, SaveIcon, SpinnerIcon, UploadIcon
 
 **No external UI libraries:** All Radix UI packages and lucide-react have been removed. Components are fully owned implementations.
 

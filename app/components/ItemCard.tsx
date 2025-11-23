@@ -1,14 +1,15 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { MenuIcon } from '@/app/icons/MenuIcon'
 import { LoadingIcon } from '@/app/icons/LoadingIcon'
 import { SaveIcon } from '@/app/icons/SaveIcon'
 import { CancelIcon } from '@/app/icons/CancelIcon'
 import { GripVerticalIcon } from '@/app/icons/GripVerticalIcon'
-import { FileIcon } from '@/app/icons/FileIcon'
+import { ChevronRightIcon } from '@/app/icons/ChevronRightIcon'
+import { FileGallery } from '@/app/components/FileGallery'
+import { ConfirmationDialog } from '@/app/components/ConfirmationDialog'
 import type { Attachment } from '@/types'
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -114,6 +115,8 @@ export function ItemCard({
   const [isExpanded, setIsExpanded] = React.useState(false)
   const [attachments, setAttachments] = React.useState<Attachment[]>(initialAttachments)
   const [menuOpen, setMenuOpen] = React.useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
   const titleRef = React.useRef<HTMLDivElement>(null)
   const descriptionRef = React.useRef<HTMLDivElement>(null)
   const menuRef = React.useRef<HTMLDivElement>(null)
@@ -205,33 +208,17 @@ export function ItemCard({
       return
     }
 
-    // If onCancel is provided (for items being tracked by parent)
-    if (onCancel) {
-      // Check if user wants to discard changes
-      if (checkForChanges()) {
-        if (!window.confirm('You have unsaved changes. Are you sure you want to cancel? Your changes will be lost.')) {
-          return
-        }
-      }
-      // Restore content before calling onCancel
-      if (titleRef.current && descriptionRef.current) {
-        titleRef.current.textContent = originalTitle
-        descriptionRef.current.textContent = originalDescription
-        titleRef.current.blur()
-        descriptionRef.current.blur()
-      }
-      setIsEditing(false)
-      onCancel()
+    // Check if there are unsaved changes
+    if (checkForChanges()) {
+      setShowCancelConfirm(true)
       return
     }
 
-    // For existing items without onCancel prop (standalone usage)
-    if (checkForChanges()) {
-      if (!window.confirm('You have unsaved changes. Are you sure you want to cancel? Your changes will be lost.')) {
-        return
-      }
-    }
+    // No changes, just cancel
+    performCancel()
+  }
 
+  const performCancel = () => {
     // Restore original content
     if (titleRef.current && descriptionRef.current) {
       titleRef.current.textContent = originalTitle
@@ -240,6 +227,22 @@ export function ItemCard({
       descriptionRef.current.blur()
     }
     setIsEditing(false)
+    onCancel?.()
+  }
+
+  const handleConfirmCancel = () => {
+    setShowCancelConfirm(false)
+    performCancel()
+  }
+
+  const handleDeleteClick = () => {
+    setMenuOpen(false)
+    setShowDeleteConfirm(true)
+  }
+
+  const handleConfirmDelete = () => {
+    setShowDeleteConfirm(false)
+    onDelete?.()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -259,8 +262,6 @@ export function ItemCard({
     setMenuOpen(false)
     action()
   }
-
-  const isImage = (type: string) => type.startsWith('image/')
 
   return (
     <div
@@ -412,7 +413,7 @@ export function ItemCard({
                     {onDelete && (
                       <button
                         className="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-destructive"
-                        onClick={() => handleMenuItemClick(onDelete)}
+                        onClick={handleDeleteClick}
                       >
                         Delete
                       </button>
@@ -433,14 +434,10 @@ export function ItemCard({
             className="text-muted-foreground"
           >
             <span className="border border-border rounded-sm px-2 py-0.5 text-sm sm:text-base flex items-center gap-1">
-              <Image
-                src="/icons/carrot-icon.svg"
-                alt="Toggle"
-                width={24}
-                height={24}
+              <ChevronRightIcon
                 className={cn(
-                  "transition-transform duration-200",
-                  isExpanded ? "rotate-0" : "-rotate-90"
+                  "h-5 w-5 transition-transform duration-200",
+                  isExpanded ? "rotate-90" : "rotate-0"
                 )}
               />
               Files ({attachments.length})
@@ -449,50 +446,45 @@ export function ItemCard({
         </div>
       )}
 
-      {/* Inline File Grid (when expanded) or children */}
+      {/* File Gallery (when expanded) or children */}
       {((itemId && isExpanded) || children) && (
         <div className="p-4 sm:p-6 pt-0 w-full">
-          {itemId && isExpanded && attachments.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {attachments.map((attachment) => (
-                <div
-                  key={attachment.id}
-                  className="relative group"
-                >
-                  <div className="aspect-square rounded-lg border bg-muted overflow-hidden">
-                    {isImage(attachment.type) ? (
-                      <img
-                        src={attachment.url}
-                        alt={attachment.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-2">
-                        <FileIcon className="h-8 w-8 text-muted-foreground mb-1" />
-                        <p className="text-xs text-center text-muted-foreground truncate w-full">
-                          {attachment.name}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                  {editable && onFileRemove && (
-                    <button
-                      className="absolute top-1 right-1 h-5 w-5 rounded-sm bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs"
-                      onClick={() => onFileRemove(attachment.id)}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-          {itemId && isExpanded && attachments.length === 0 && (
-            <p className="text-sm text-muted-foreground">No files attached</p>
+          {itemId && isExpanded && (
+            <FileGallery
+              attachments={attachments}
+              onFilesAdded={onFilesAdded}
+              onFileRemove={onFileRemove}
+              editable={editable}
+              maxFiles={10}
+            />
           )}
           {children}
         </div>
       )}
+
+      {/* Cancel Confirmation Dialog */}
+      <ConfirmationDialog
+        open={showCancelConfirm}
+        onOpenChange={setShowCancelConfirm}
+        title="Discard Changes?"
+        description="You have unsaved changes that will be lost. Are you sure you want to discard them?"
+        onConfirm={handleConfirmCancel}
+        confirmLabel="Discard"
+        cancelLabel="Keep Editing"
+        isDestructive={true}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        title="Delete Item?"
+        description="This action cannot be undone. Are you sure you want to delete this item?"
+        onConfirm={handleConfirmDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        isDestructive={true}
+      />
     </div>
   )
 }
