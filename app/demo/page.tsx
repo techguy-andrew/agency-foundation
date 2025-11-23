@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { Reorder, useDragControls } from "framer-motion"
-import { toast, Toaster } from "sonner"
+import { toast, Toaster, ToastProvider, ToastRegistry } from "@/app/components/Toast"
 import { PlusIcon } from "@/app/icons/PlusIcon"
 import { GripVerticalIcon } from "@/app/icons/GripVerticalIcon"
 import { useQueryClient } from "@tanstack/react-query"
@@ -339,23 +339,10 @@ export default function DemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-      <Toaster
-        position="bottom-center"
-        toastOptions={{
-          style: {
-            background: 'hsl(var(--success))',
-            color: 'hsl(var(--success-foreground))',
-            border: 'none',
-            borderRadius: '9999px',
-            padding: '8px 16px',
-            fontSize: '14px',
-            minWidth: 'auto',
-            maxWidth: '400px',
-          },
-          className: 'bottom-6',
-        }}
-      />
+    <ToastProvider>
+      <ToastRegistry />
+      <Toaster />
+      <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
 
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
@@ -427,6 +414,7 @@ export default function DemoPage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </ToastProvider>
   )
 }
