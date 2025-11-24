@@ -167,7 +167,7 @@ agency-foundation/
 │   ├── (auth)/              # Authentication routes
 │   ├── (dashboard)/         # Dashboard routes  
 │   ├── api/                 # API endpoints
-│   ├── components/          # All UI components (flat, 20 files)
+│   ├── components/          # All UI components (flat, 23 files)
 │   ├── icons/               # Icon components (separate from UI)
 │   └── styles/themes/       # Theme CSS files (5 variations)
 ├── context/                 # Documentation and checkpoints

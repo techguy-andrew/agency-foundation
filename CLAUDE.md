@@ -25,7 +25,7 @@ All UI components live in `app/components/` with PascalCase naming. No subfolder
 - Entire interface visible at a glance
 - True drag-and-drop portability between projects
 
-**22 components:** Badge, Button, Card, ConfirmationDialog, Dialog, DropdownMenu, EmptyState, FileGallery, Footer, Header, Input, ItemCard, ItemCardSkeleton, ItemForm, LoginForm, Navigation, PageHeader, PageSection, SettingsForm, Sidebar, Skeleton, Toast
+**23 components:** Badge, Button, Card, ConfirmationDialog, Dialog, DropdownMenu, EmptyState, FileGallery, Footer, Header, Input, ItemCard, ItemCardSkeleton, ItemForm, LoginForm, Navigation, PageHeader, PageSection, SettingsForm, Sidebar, Skeleton, Toast, Toaster
 
 **12 icons in `app/icons/`:** CancelIcon, ChevronRightIcon, CloseIcon, DownloadIcon, FileIcon, GripVerticalIcon, LoadingIcon, MenuIcon, PlusIcon, SaveIcon, SpinnerIcon, UploadIcon
 
@@ -91,8 +91,8 @@ app/
 ├── (auth)/                 # Auth routes (login, signup)
 ├── (dashboard)/            # Protected dashboard routes
 ├── api/                    # API endpoints
-├── components/             # All UI components (flat, 20 files)
-├── icons/                  # Icon components (10 files)
+├── components/             # All UI components (flat, 23 files)
+├── icons/                  # Icon components (12 files)
 ├── styles/
 │   ├── globals.css         # Global styles, Tailwind directives
 │   └── themes/             # Theme CSS files

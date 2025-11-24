@@ -452,6 +452,7 @@ project-name/
 │   │   ├── Badge.tsx
 │   │   ├── Button.tsx
 │   │   ├── Card.tsx
+│   │   ├── ConfirmationDialog.tsx
 │   │   ├── Dialog.tsx
 │   │   ├── DropdownMenu.tsx
 │   │   ├── EmptyState.tsx
@@ -468,10 +469,14 @@ project-name/
 │   │   ├── PageSection.tsx
 │   │   ├── SettingsForm.tsx
 │   │   ├── Sidebar.tsx
-│   │   └── Skeleton.tsx
+│   │   ├── Skeleton.tsx
+│   │   ├── Toast.tsx
+│   │   └── Toaster.tsx
 │   ├── icons/
 │   │   ├── CancelIcon.tsx
+│   │   ├── ChevronRightIcon.tsx
 │   │   ├── CloseIcon.tsx
+│   │   ├── DownloadIcon.tsx
 │   │   ├── FileIcon.tsx
 │   │   ├── GripVerticalIcon.tsx
 │   │   ├── LoadingIcon.tsx
